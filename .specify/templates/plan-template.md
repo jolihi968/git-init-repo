@@ -178,5 +178,5 @@ research.md 完成
 
 （其餘內容保留原意，文字已翻譯）
    
-   Run `.specify/scripts/powershell/update-agent-context.ps1 -AgentType copilot`
+   If your repository uses automation to update agent context, run the repository-approved script or follow documented procedures (for example: `./.specify/scripts/update-agent-context.ps1 -AgentType <AGENT>`). Do not include agent-specific credentials or instructions in templates; keep instructions generic and reference the repo's operations documentation.
   

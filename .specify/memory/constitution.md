@@ -1,50 +1,101 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+<!--
+同步影響報告（Sync Impact Report）
 
-## Core Principles
+- 版本變動：v0.0.0 → v1.0.1
+- 變更原則：新增明確的「資安優先」與「最小權限」原則；釐清可觀測性與版本管理要求
+- 新增章節：安全需求（Security Requirements）、存取控制與資料處理指引
+- 移除章節：無
+- 需同步更新之範本：
+	- .specify/templates/plan-template.md：✅ 已更新（新增憲法檢查指引）
+	- .specify/templates/spec-template.md：✅ 已更新（新增憲法對齊提醒）
+	- .specify/templates/tasks-template.md：✅ 已更新（新增憲法對齊提醒）
+	- .specify/templates/commands/*：⚠ 待人工檢查（含 agent-specific 參考）
+- 後續待辦項：
+	- TODO(RATIFICATION_DATE)：請確認專案原始採納日期（若有紀錄請提供以便填入憲法）
+-->
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+# Git-Init-Repo 憲法
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+## 核心原則
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### 原則一：資安優先（不可談判）
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+所有設計與操作決策都必須以網路安全、系統安全與資料存取控制為優先考量。包括對新功能進行威脅建模、採用安全預設（secure defaults）、資料靜態與傳輸加密、定期弱點掃描，以及具備文件化的事件應變流程。
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+理由：此儲存庫由「資訊部 — 網站基建管理員」管理，任何曝露或設置錯誤都可能影響生產服務與敏感資料，故安全必為首要限制條件。
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### 原則二：最小權限與存取控制
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+系統、資料與部署流程的存取必須遵循最小權限原則。角色與權限必須明確、可稽核，並定期檢視。任何自動化（例如 CI/CD agent、bot）必須使用範圍限定且有存續時效的金鑰或令牌。
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+理由：縮小爆發範圍能降低營運風險，並協助滿足內部合規要求。
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### 原則三：先測試再實作（含合規測試）
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+所有新功能與整合在可行時，應先撰寫自動化測試。除了功能測試外，還必須包含安全與合規性測試（如存取控制、資安事件日誌、輸入驗證），並納入 CI Gate。
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+理由：測試能強制維持預期行為並降低回歸風險；安全測試確保持續遵循憲法要求。
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+### 原則四：可觀測性與可稽核日誌
+
+系統必須提供結構化日誌、指標與追蹤（tracing），以利調查資安事件、效能退化與存取異常。對安全敏感事件（如驗證失敗、權限提升、資料匯出）必須記錄足夠上下文以利鑑識分析，同時注意隱私保護。
+
+理由：快速偵測與鑑識能力是降低事件影響與支援營運決策的關鍵。
+
+### 原則五：版本管理、向後相容與變更透明
+
+API、契約與對外行為必須使用語義化版本（semantic versioning）。重大不相容變更需附明確遷移計畫、退役/棄用期與說明。所有治理層級的變更必須記錄於憲法並調整版本號。
+
+理由：清晰的版本管理能降低意外相容性中斷，並為相依系統提供可預期的變更流程。
+
+## 安全需求
+
+本儲存庫下所有專案與規格必須聲明：
+
+- 資料分類（public/internal/confidential）。
+- 保留與刪除策略（retention/deletion policies）。
+- 靜態與傳輸加密措施（或若有例外，需說明理由）。
+- 驗證與授權控制的要求。
+
+敏感資料不得以明文存於原始碼庫，機密資訊必須使用核可的秘密管理系統並避免提交至版本控制。
+
+## 開發流程與品質門檻
+
+- 涉及安全、存取控制或資料處理的程式變更必須有明確的安全檢查清單，並由具安全責任的成員審查。
+- CI Gate 必須至少包含：單元測試、契約測試、安全靜態分析/秘密掃描與部署安全檢查。
+- 任何對門檻的例外需建立書面暫時豁免、指定負責人與到期時間。
+
+## 治理
+
+對憲法的修訂需透過 PR 提出、附理由、並由至少兩位審查者核准，其中一位應為資訊部（網站基建管理員）或指定的安全代表。若修訂實質改變原則（例如移除或重定義），視為 MAJOR 版本提升。
+
+修憲程序摘要：
+
+- 在分支上草擬變更並加入變更日誌條目。
+- 新增測試或驗證以示變更如何被強制執行。
+- 提交 PR，並包含遷移/部署計畫。
+- 取得核准（2 位審查者，其中含安全代表）。
+- 合併並更新憲法版本與最後修訂日期。
+
+版本：1.0.1 | 採納：2025-10-08 | 最後修訂：2025-10-08
+
+## 開發流程與品質門檻
+
+- 涉及安全、存取控制或資料處理的程式變更必須有明確的安全檢查清單，並由具安全責任的成員審查。
+- CI Gate 必須至少包含：單元測試、契約測試、安全靜態分析/秘密掃描與部署安全檢查。
+- 任何對門檻的例外需建立書面暫時豁免、指定負責人與到期時間。
+
+## 治理
+
+對憲法的修訂需透過 PR 提出、附理由、並由至少兩位審查者核准，其中一位應為資訊部（網站基建管理員）或指定的安全代表。若修訂實質改變原則（例如移除或重定義），視為 MAJOR 版本提升。
+
+修憲程序摘要：
+
+- 在分支上草擬變更並加入變更日誌條目。
+- 新增測試或驗證以示變更如何被強制執行。
+- 提交 PR，並包含遷移/部署計畫。
+- 取得核准（2 位審查者，其中含安全代表）。
+- 合併並更新憲法版本與最後修訂日期。
+
+版本：1.0.1 | 採納：2025-10-08 | 最後修訂：2025-10-08

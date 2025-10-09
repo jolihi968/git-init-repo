@@ -1,0 +1,21 @@
+﻿name: Markdown Lint
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  markdown-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install markdownlint
+        run: |
+          sudo npm install -g markdownlint-cli@0.33.0
+      - name: Run markdownlint
+        run: |
+          markdownlint "**/*.md" --config .markdownlint.json || true
+      - name: Upload markdownlint results
+        if: failure()
+        run: echo "Markdown lint completed with results."

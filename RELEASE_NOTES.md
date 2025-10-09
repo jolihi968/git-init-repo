@@ -1,4 +1,4 @@
-﻿# Release Notes
+# Release Notes
 
 Version: v1.0.1 (draft)
 

@@ -30,5 +30,5 @@ https://github.com/github/spec-kit
 	     
 	
 		```
-6. 
-7. 
+4. chore/constitution-zh-TW PR 處理[合併PR](合併PR.md)
+5. 
